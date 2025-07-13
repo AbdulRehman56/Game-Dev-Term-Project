@@ -1,0 +1,4 @@
+repository "Term Project 2025-07-13_18-26-38/Term Project@18968274145709@cloud"
+  path "/"
+    br "/main"
+    co "/main"

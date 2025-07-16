@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     public Transform missileSpawnPoint;
     public float destroyTime = 5f;
 
+    [Header("Auto Shooting")]
+    public float fireRate = 0.5f; // Time in seconds between shots
+    private float fireTimer;
+
     private float minX, maxX, minY, maxY;
 
     private void Start()
@@ -28,24 +32,26 @@ public class PlayerController : MonoBehaviour
         maxX = topRight.x - halfWidth;
         minY = bottomLeft.y + halfHeight;
         maxY = topRight.y - halfHeight;
+
+        fireTimer = fireRate; // Ready to fire at start
     }
 
     private void Update()
     {
 #if UNITY_EDITOR || UNITY_STANDALONE
-        KeyboardMovement(); // For testing in Unity Editor
+        KeyboardMovement(); // Editor / PC
 #else
-        TouchMovement();    // For mobile
+        TouchMovement();    // Android / Mobile
 #endif
-        PlayerShoot();
+
+        AutoShoot(); // Works on both platforms
     }
 
     void KeyboardMovement()
     {
-        float xPos = Input.GetAxis("Horizontal");
-        float yPos = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(xPos, yPos, 0) * speed * Time.deltaTime;
+        float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
+        Vector3 movement = new Vector3(x, y, 0) * speed * Time.deltaTime;
         transform.Translate(movement);
         ClampPosition();
     }
@@ -55,9 +61,10 @@ public class PlayerController : MonoBehaviour
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-            Vector3 touchWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Mathf.Abs(Camera.main.transform.position.z)));
+            Vector3 touchWorldPos = Camera.main.ScreenToWorldPoint(
+                new Vector3(touch.position.x, touch.position.y, Mathf.Abs(Camera.main.transform.position.z))
+            );
 
-            // Move towards touch position
             Vector3 targetPos = new Vector3(touchWorldPos.x, touchWorldPos.y, transform.position.z);
             transform.position = Vector3.Lerp(transform.position, targetPos, speed * Time.deltaTime);
 
@@ -73,23 +80,14 @@ public class PlayerController : MonoBehaviour
         transform.position = clampedPos;
     }
 
-    void PlayerShoot()
+    void AutoShoot()
     {
-#if UNITY_EDITOR || UNITY_STANDALONE
-        if (Input.GetKeyDown(KeyCode.Space))
+        fireTimer -= Time.deltaTime;
+        if (fireTimer <= 0f)
         {
             ShootMissile();
+            fireTimer = fireRate; // Reset timer
         }
-#else
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
-            {
-                ShootMissile();
-            }
-        }
-#endif
     }
 
     void ShootMissile()

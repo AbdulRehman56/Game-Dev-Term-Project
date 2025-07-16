@@ -4,10 +4,22 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
     public GameObject enemyPrefab;
     public float minInstantiateValue = 0f;  // Set default values
     public float maxInstantiateValue = 0f;   // Set default values
     public float enemyDestroyTime = 10f;
+
+    [Header("Particle Effects")]
+    public GameObject explosion;
+    public GameObject muzzleFlash;
+
+    public void Awake()
+    {
+       
+            instance = this;
+    
+    }
 
     private void Start()
     {
@@ -25,4 +37,6 @@ public class GameManager : MonoBehaviour
         GameObject enemy = Instantiate(enemyPrefab, enemypos, Quaternion.Euler(0f, 0f, 180f));
         Destroy(enemy, enemyDestroyTime);
     }
+
+ 
 }

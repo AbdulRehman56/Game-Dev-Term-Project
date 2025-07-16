@@ -14,7 +14,9 @@ public class MissileController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("hAS rUN");
+            GameObject gm = Instantiate(GameManager.instance.explosion, transform.position,transform.rotation);
+            Destroy(gm, 2f); // Destroy the explosion effect after 1 second
+            // Debug.Log("hAS rUN");
             ScoreManager.OnScoreAdded?.Invoke();
             Destroy(collision.gameObject); // Destroy the enemy
             Destroy(gameObject); // Destroy the missile

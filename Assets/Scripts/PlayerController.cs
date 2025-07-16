@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public GameObject missile;
     public Transform missileSpawnPoint;
     public float destroyTime = 5f;
+    public Transform muzzleSpawnPosition;
 
     [Header("Auto Shooting")]
     public float fireRate = 0.5f; // Time in seconds between shots
@@ -100,6 +101,8 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            GameObject gm = Instantiate(GameManager.instance.explosion, transform.position, transform.rotation);
+            Destroy(gm, 2f);
             Debug.Log("Player hit by an enemy!");
             Destroy(this.gameObject);
         }

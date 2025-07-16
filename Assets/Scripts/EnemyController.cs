@@ -4,14 +4,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    private float speed = 1f;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    [SerializeField]private float speed = 1f;
     void Update()
     {
         transform.Translate(Vector3.up * speed * Time.deltaTime);

@@ -15,17 +15,12 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        // Get the camera reference
         Camera cam = Camera.main;
-
-        // Distance from camera to player (z=0)
         float zDistance = Mathf.Abs(cam.transform.position.z + transform.position.z);
 
-        // Convert screen bounds to world bounds
         Vector3 bottomLeft = cam.ScreenToWorldPoint(new Vector3(0, 0, zDistance));
         Vector3 topRight = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, zDistance));
 
-        // Clamp values based on the player’s half width/height
         float halfWidth = GetComponent<SpriteRenderer>().bounds.extents.x;
         float halfHeight = GetComponent<SpriteRenderer>().bounds.extents.y;
 
@@ -37,18 +32,41 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        PlayerMovement();
+#if UNITY_EDITOR || UNITY_STANDALONE
+        KeyboardMovement(); // For testing in Unity Editor
+#else
+        TouchMovement();    // For mobile
+#endif
         PlayerShoot();
     }
 
-    void PlayerMovement()
+    void KeyboardMovement()
     {
         float xPos = Input.GetAxis("Horizontal");
         float yPos = Input.GetAxis("Vertical");
+
         Vector3 movement = new Vector3(xPos, yPos, 0) * speed * Time.deltaTime;
         transform.Translate(movement);
+        ClampPosition();
+    }
 
-        // Clamp position
+    void TouchMovement()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            Vector3 touchWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Mathf.Abs(Camera.main.transform.position.z)));
+
+            // Move towards touch position
+            Vector3 targetPos = new Vector3(touchWorldPos.x, touchWorldPos.y, transform.position.z);
+            transform.position = Vector3.Lerp(transform.position, targetPos, speed * Time.deltaTime);
+
+            ClampPosition();
+        }
+    }
+
+    void ClampPosition()
+    {
         Vector3 clampedPos = transform.position;
         clampedPos.x = Mathf.Clamp(clampedPos.x, minX, maxX);
         clampedPos.y = Mathf.Clamp(clampedPos.y, minY, maxY);
@@ -57,11 +75,27 @@ public class PlayerController : MonoBehaviour
 
     void PlayerShoot()
     {
+#if UNITY_EDITOR || UNITY_STANDALONE
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GameObject gm = Instantiate(missile, missileSpawnPoint.position, missileSpawnPoint.rotation);
-            Destroy(gm, destroyTime);
+            ShootMissile();
         }
+#else
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                ShootMissile();
+            }
+        }
+#endif
+    }
+
+    void ShootMissile()
+    {
+        GameObject gm = Instantiate(missile, missileSpawnPoint.position, missileSpawnPoint.rotation);
+        Destroy(gm, destroyTime);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

@@ -5,8 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject enemyPrefab;
-    public float minInstantiateValue = -8f;  // Set default values
-    public float maxInstantiateValue = 8f;   // Set default values
+    public float minInstantiateValue = 0f;  // Set default values
+    public float maxInstantiateValue = 0f;   // Set default values
     public float enemyDestroyTime = 10f;
 
     private void Start()

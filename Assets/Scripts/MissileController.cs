@@ -17,7 +17,7 @@ public class MissileController : MonoBehaviour
         transform.Translate(Vector3.up * missileSpeed * Time.deltaTime);
     }
 
-    private void onCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {

@@ -32,4 +32,15 @@ public class PlayerController : MonoBehaviour
             Destroy(gm, 5f);
         }
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            // Handle player collision with enemy
+            Debug.Log("Player hit by an enemy!");
+            // You can add logic here to handle player damage or game over
+            Destroy(this.gameObject); // Destroy the player object
+        }
+    }
 }

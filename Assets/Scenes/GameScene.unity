@@ -612,8 +612,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 1548422971529588306, guid: e0d24d74bac94174da97c2dfa0bb763c, type: 3}
-  minInstantiateValue: -8
-  maxInstantiateValue: 8
+  minInstantiateValue: -2
+  maxInstantiateValue: 2
   enemyDestroyTime: 10
 --- !u!4 &935348215
 Transform:

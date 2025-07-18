@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Missile")]
     public GameObject missile;
+    public GameObject gameOverPanel;
     public Transform missileSpawnPoint;
     public float destroyTime = 5f;
     public Transform muzzleSpawnPosition;
@@ -104,6 +105,10 @@ public class PlayerController : MonoBehaviour
             GameObject gm = Instantiate(GameManager.instance.explosion, transform.position, transform.rotation);
             Destroy(gm, 2f);
             Debug.Log("Player hit by an enemy!");
+            
+            // Trigger game over
+            GameManager.instance.GameOver();
+            
             Destroy(this.gameObject);
         }
     }
